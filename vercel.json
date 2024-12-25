@@ -1,0 +1,23 @@
+{
+    "projects": [
+      {
+        "name": "timetable-backend",
+        "src": "./backend",
+        "buildCommand": "npm install && npm run build",
+        "outputDirectory": "dist"
+      },
+      {
+        "name": "timetable-frontend",
+        "src": "./frontend",
+        "buildCommand": "npm install && npm run build",
+        "outputDirectory": "build"
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "/api/(.*)",
+        "destination": "https://timetable-backend.vercel.app/api/$1"
+      }
+    ]
+  }
+  
