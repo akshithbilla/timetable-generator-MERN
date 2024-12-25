@@ -4,26 +4,27 @@
     {
       "src": "server/index.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "dest": "/server/index.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/frontend/build/$1"
     }
   ],
   "env": {
-    "NODE_ENV": {
-      "description": "Node environment",
-      "value": "production"
-    },
-    "MONGO_URI": {
-      "description": "MongoDB URI",
-      "value": "mongodb+srv://billaakshith:5u6LmQCjKemdh9Yi@timetable.jfpcb.mongodb.net/timetable?retryWrites=true&w=majority"
-    }
+    "NODE_ENV": "production",
+    "MONGO_URI": "mongodb+srv://billaakshith:5u6LmQCjKemdh9Yi@timetable.jfpcb.mongodb.net/timetable?retryWrites=true&w=majority"
   }
 }
