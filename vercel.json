@@ -1,11 +1,30 @@
 {
-    "buildCommand": "npm install",
-    "outputDirectory": "",
-    "rewrites": [
-      {
-        "source": "/api/(.*)",
-        "destination": "/api/$1"
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
       }
-    ]
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/build/index.html"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "MONGO_URI": "mongodb+srv://billaakshith:5u6LmQCjKemdh9Yi@timetable.jfpcb.mongodb.net/timetable?retryWrites=true&w=majority"
   }
-  
+}
