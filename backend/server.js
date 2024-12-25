@@ -9,6 +9,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Root route for server check
+app.get('/', (req, res) => {
+  res.send('Hello! The server is working.');
+});
+
 // Use routes
 app.use('/api/timetables', timetableRoutes);
 
