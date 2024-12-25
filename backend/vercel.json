@@ -2,14 +2,28 @@
   "version": 2,
   "builds": [
     {
-      "src": "*.js",
+      "src": "server/index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": {
+      "description": "Node environment",
+      "value": "production"
+    },
+    "MONGO_URI": {
+      "description": "MongoDB URI",
+      "value": "mongodb+srv://billaakshith:5u6LmQCjKemdh9Yi@timetable.jfpcb.mongodb.net/timetable?retryWrites=true&w=majority"
+    }
+  }
 }
