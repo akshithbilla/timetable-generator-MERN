@@ -20,7 +20,13 @@
       },
       {
         "src": "/(.*)",
-        "dest": "frontend/build/index.html"
+        "dest": "/frontend/build/index.html"
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "/(.*)",
+        "destination": "/"
       }
     ],
     "env": {
