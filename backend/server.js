@@ -9,6 +9,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Root route for displaying a message in the browser
+app.get('/', (req, res) => {
+  res.send('Server is connected');
+});
+
 // Use routes
 app.use('/api/timetables', timetableRoutes);
 
