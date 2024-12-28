@@ -15,7 +15,7 @@ function App() {
 
   const fetchTimetables = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/timetables/getTable');
+      const response = await axios.get('https://timetable-generator-backend-2pby.onrender.com/api/timetables/getTable');
       setTimetables(response.data);
       if (response.data.length > 0) {
         setSelectedTimetable(response.data[response.data.length - 1]);
@@ -28,7 +28,7 @@ function App() {
   const createTimetable = async () => {
     if (rows && columns) {
       try {
-        const response = await axios.post('http://localhost:3000/api/timetables/createTable', {
+        const response = await axios.post('https://timetable-generator-backend-2pby.onrender.com/api/timetables/createTable', {
           rows: parseInt(rows),
           columns: parseInt(columns),
         });
@@ -46,7 +46,7 @@ function App() {
 
   const updateTimetable = async (id, updatedData) => {
     try {
-      const response = await axios.post('http://localhost:3000/api/timetables/updateTable', { id, data: updatedData });
+      const response = await axios.post('https://timetable-generator-backend-2pby.onrender.com/api/timetables/updateTable', { id, data: updatedData });
       setTimetables(timetables.map(t => (t._id === id ? response.data : t)));
       setSelectedTimetable(response.data);
     } catch (error) {
@@ -56,7 +56,7 @@ function App() {
 
   const deleteTimetable = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/timetables/deleteTable/${id}`);
+      await axios.delete(`https://timetable-generator-backend-2pby.onrender.com/api/timetables/deleteTable/${id}`);
       const updatedTimetables = timetables.filter(t => t._id !== id);
       setTimetables(updatedTimetables);
       setSelectedTimetable(updatedTimetables.length > 0 ? updatedTimetables[updatedTimetables.length - 1] : null);
