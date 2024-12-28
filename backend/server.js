@@ -9,20 +9,31 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Root route for displaying a message in the browser
-app.get('/', (req, res) => {
-  res.send('Server is connected');
-});
-
-// Use routes
-app.use('/api/timetables', timetableRoutes);
-
-// Connect to MongoDB
+ 
+let dbConnected = false;
+ 
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.error(err));
+  .then(() => {
+    dbConnected = true;
+    console.log('MongoDB connected');
+  })
+  .catch((err) => {
+    dbConnected = false;
+    console.error('MongoDB connection error:', err);
+  });
+ 
+app.get('/', (req, res) => {
+  if (dbConnected) {
+    res.send('<h3>Server is connected!</h3>');
+  } else {
+    res.status(500).send('Error: Server could not connect to the database');
+  }
+});
 
-// Start server
+ 
+app.use('/api/timetables', timetableRoutes);
+
+ 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

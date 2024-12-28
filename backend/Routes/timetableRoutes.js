@@ -43,7 +43,6 @@ router.post('/updateTable', async (req, res) => {
 });
 
 // Add to timetableRoutes.js
-// Add to timetableRoutes.js
 router.delete('/deleteTable/:id', async (req, res) => {
     try {
       const { id } = req.params;
