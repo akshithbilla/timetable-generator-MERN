@@ -1,5 +1,3 @@
-// backend/Routes/timetableRoutes.js
-
 const express = require('express');
 const Timetable = require('../models/Timetablee');
 const router = express.Router();
@@ -7,12 +5,11 @@ const router = express.Router();
 // Create a new timetable
 router.post('/createTable', async (req, res) => {
   try {
-    const { name, rows, columns } = req.body;
+    const { rows, columns } = req.body;
     const newTable = new Timetable({
-      name,
       rows,
       columns,
-      data: Array.from({ length: rows }).map(() => Array(columns).fill('')),
+      data: Array(rows).fill(Array(columns).fill('')),
     });
     await newTable.save();
     res.json(newTable);
@@ -33,12 +30,11 @@ router.get('/getTable', async (req, res) => {
   }
 });
 
-// Update a timetable's data, name, rows, and columns
-// Update a timetable's data, name, rows, and columns
+// Update a timetable
 router.post('/updateTable', async (req, res) => {
   try {
-    const { id, data, name, rows, columns } = req.body;
-    const updatedTable = await Timetable.findByIdAndUpdate(id, { data, name, rows, columns }, { new: true });
+    const { id, data } = req.body;
+    const updatedTable = await Timetable.findByIdAndUpdate(id, { data }, { new: true });
     res.json(updatedTable);
   } catch (error) {
     console.error(error);
@@ -46,16 +42,18 @@ router.post('/updateTable', async (req, res) => {
   }
 });
 
-// Delete a timetable
+// Add to timetableRoutes.js
+// Add to timetableRoutes.js
 router.delete('/deleteTable/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Timetable.findByIdAndDelete(id);
-    res.json({ message: 'Timetable deleted' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
+    try {
+      const { id } = req.params;
+      await Timetable.findByIdAndDelete(id);
+      res.json({ message: 'Timetable deleted' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
+  
 
 module.exports = router;

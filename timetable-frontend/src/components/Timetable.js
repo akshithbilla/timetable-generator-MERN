@@ -1,33 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Timetable = ({ timetable, updateTimetable, deleteTimetable }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [localData, setLocalData] = useState([]);
-  const [name, setName] = useState(timetable.name);
-  const [rows, setRows] = useState(timetable.rows);
-  const [columns, setColumns] = useState(timetable.columns);
 
   useEffect(() => {
     setLocalData(timetable.data || Array.from({ length: timetable.rows }).map(() => Array(timetable.columns).fill('')));
-    setName(timetable.name);
-    setRows(timetable.rows);
-    setColumns(timetable.columns);
   }, [timetable]);
-
-  const resizeData = useCallback((newRows, newColumns) => {
-    if (newRows <= 0 || newColumns <= 0) return;
-
-    const newData = Array.from({ length: newRows }).map((_, rowIndex) =>
-      rowIndex < localData.length
-        ? localData[rowIndex].slice(0, newColumns).concat(Array(Math.max(newColumns - localData[rowIndex].length, 0)).fill(''))
-        : Array(newColumns).fill('')
-    );
-    setLocalData(newData);
-  }, [localData]);
-
-  useEffect(() => {
-    resizeData(rows, columns);
-  }, [rows, columns, resizeData]);
 
   const handleInputChange = (rowIndex, colIndex, value) => {
     const updatedData = localData.map((row, ri) =>
@@ -37,39 +16,80 @@ const Timetable = ({ timetable, updateTimetable, deleteTimetable }) => {
   };
 
   const handleSubmit = () => {
-    updateTimetable(timetable._id, localData, name, rows, columns);
+    updateTimetable(timetable._id, localData);
     setIsEditing(false);
+  };
+
+  const handlePrint = () => {
+    try {
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        alert('Popup blocker is preventing the print window from opening. Please allow popups for this site.');
+        return;
+      }
+
+      const tableHTML = `
+        <html>
+          <head>
+            <title>Print Timetable</title>
+            <style>
+              table {
+                width: 100%;
+                border-collapse: collapse;
+              }
+              td {
+                border: 1px solid #000;
+                text-align: center;
+                padding: 10px;
+              }
+              body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+              }
+            </style>
+          </head>
+          <body>
+            <h1>Timetable ID: ${timetable._id}</h1>
+            <table>
+              ${localData
+                .map(
+                  (row) =>
+                    `<tr>${row
+                      .map((cell) => `<td>${cell || ''}</td>`)
+                      .join('')}</tr>`
+                )
+                .join('')}
+            </table>
+            <script>
+              window.onload = () => {
+                window.print();
+                window.close();
+              };
+            </script>
+          </body>
+        </html>
+      `;
+
+      printWindow.document.open();
+      printWindow.document.write(tableHTML);
+      printWindow.document.close();
+    } catch (error) {
+      console.error('Error during printing:', error);
+    }
   };
 
   return (
     <div className="timetable-container">
-      <h3>Timetable Name: {isEditing ? (
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-        ) : (
-          timetable.name
-        )}
-      </h3>
-      {isEditing && (
-        <div>
-          <label>
-            Rows:
-            <input type="number" value={rows} onChange={(e) => setRows(Math.max(parseInt(e.target.value) || 0, 1))} />
-          </label>
-          <label>
-            Columns:
-            <input type="number" value={columns} onChange={(e) => setColumns(Math.max(parseInt(e.target.value) || 0, 1))} />
-          </label>
-        </div>
-      )}
+      <h3>Timetable ID: {timetable._id}</h3>
       <table>
         <tbody>
-          {Array.from({ length: rows }).map((_, rowIndex) => (
+          {localData.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              {Array.from({ length: columns }).map((_, colIndex) => (
+              {row.map((cell, colIndex) => (
                 <td key={colIndex}>
                   <input
                     type="text"
-                    value={localData[rowIndex]?.[colIndex] || ''}
+                    value={cell}
                     onChange={(e) => handleInputChange(rowIndex, colIndex, e.target.value)}
                     disabled={!isEditing}
                   />
@@ -80,14 +100,15 @@ const Timetable = ({ timetable, updateTimetable, deleteTimetable }) => {
         </tbody>
       </table>
       {isEditing ? (
-        <div className="submit-buttons">
+        <div>
           <button onClick={handleSubmit}>Submit</button>
           <button onClick={() => setIsEditing(false)}>Cancel</button>
         </div>
       ) : (
-        <div className="submit-buttons">
+        <div>
           <button onClick={() => setIsEditing(true)}>Edit</button>
           <button onClick={() => deleteTimetable(timetable._id)}>Delete</button>
+          <button onClick={handlePrint}>Print Table</button>
         </div>
       )}
     </div>

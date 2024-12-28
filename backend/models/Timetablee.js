@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const timetableSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
   rows: {
     type: Number,
     required: true,
